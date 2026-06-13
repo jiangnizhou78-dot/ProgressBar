@@ -3,7 +3,6 @@ package com.example.icon.config;
 import com.example.icon.config.intercepter.SysInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -22,11 +21,7 @@ public class WebAppConfigurer implements WebMvcConfigurer {
     }
     @Override
     public void addInterceptors(InterceptorRegistry registry){
-        String[] patterns = new String[]{
-                "/image/iconPicture/**",  // 放行所有图片请求
-                "/icontype",
-                "/icon/getIcons/**"
-        };
+        String[] patterns=new String[]{};
         registry.addInterceptor(sysInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns(patterns);
