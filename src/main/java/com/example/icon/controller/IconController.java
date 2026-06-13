@@ -8,6 +8,9 @@ import com.example.icon.entity.Icontype;
 import com.example.icon.mapper.IcontypeMapper;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
+import java.io.File;
+import java.nio.file.Files;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,11 +73,36 @@ public Page<Icon> findPage(@RequestParam Integer pageNum,
                 return Result.success(icontypeMapper.selectList(null));
 }
         //根据类型id筛选
+        // 图片物理路径（结尾必须带 /）
+        private static final String IMAGE_PATH = "./iconPicture/";
+
         @GetMapping("/getIcons/{typeId}")
-        public Result findIcons(@PathVariable Integer typeId){
-                List<Icon> icons= iconService.list(new QueryWrapper<Icon>().eq("typeId",typeId));
-                Map<String,Object> map = new HashMap<>();
-                map.put("message",icons);
+        public Result findIcons(@PathVariable Integer typeId) {
+                QueryWrapper<Icon> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("typeId", typeId);
+                List<Icon> icons = iconService.list(queryWrapper);
+
+                // 循环读取本地图片并转为 Base64
+                for (Icon icon : icons) {
+                        String picFileName = icon.getPicture();
+                        if (picFileName == null || picFileName.trim().isEmpty()) {
+                                continue;
+                        }
+
+                        try {
+                                File imgFile = new File(IMAGE_PATH + picFileName);
+                                if (imgFile.exists() && imgFile.isFile()) {
+                                        byte[] bytes = Files.readAllBytes(imgFile.toPath());
+                                        String base64 = "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes);
+                                        icon.setBase64Pic(base64);
+                                }
+                        } catch (Exception e) {
+                                e.printStackTrace();
+                        }
+                }
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("message", icons);
                 return Result.success(map);
         }
 }
