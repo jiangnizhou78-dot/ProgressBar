@@ -26,4 +26,5 @@ public class WebAppConfigurer implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns(patterns);
     }
+
 }
