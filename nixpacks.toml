@@ -1,0 +1,5 @@
+[phases.setup]
+aptPkgs = ["openjdk-11-jre"]
+
+[start]
+cmd = "java -jar *.jar"
