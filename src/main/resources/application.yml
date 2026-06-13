@@ -1,0 +1,33 @@
+# 应用服务 WEB 访问端口
+server:
+  port: 9090
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 替换为你的 Aiven 数据库信息
+    url: jdbc:mysql://mysql-progressbar-progress-bar.g.aivencloud.com:10934/defaultdb?useSSL=true&requireSSL=true&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: avnadmin
+    # 替换为你的真实密码
+    password:  ${AIVEN_DB_PASSWORD}
+
+# mybatis:
+#   mapper-locations: mapper/*.xml #扫描所有mybatis的xml文件
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+# configuration:
+#   log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+files:
+  upload:
+    # 注意：部署到服务器时，这里要改成服务器上的路径，或者用相对路径/云存储
+    path: ./iconPicture/
+
+weixin:
+  jscode2sessionUrl: https://api.weixin.qq.com/sns/jscode2session
+  appid: wx91e7f939b70f5e6d9
+  secret: 966584589838e218385831c8953f368
