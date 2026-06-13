@@ -6,21 +6,34 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.Arrays;
+
 @Configuration
 public class CorsConfig {
-
-    // 当前跨域请求最大有效时长。这里默认1天
-    private static final long MAX_AGE = 24 * 60 * 60;
-
     @Bean
     public CorsFilter corsFilter() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // 1. 明确指定允许的域名，绝对不能用*！
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:8080", // 本地开发环境
+                "https://progressbar-five.vercel.app" // 你的Vercel前端正式域名
+        ));
+
+        // 2. 允许所有常用请求方法
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // 3. 允许所有请求头
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+
+        // 4. 允许携带凭证
+        configuration.setAllowCredentials(true);
+
+        // 5. 预检请求缓存1小时，减少重复请求
+        configuration.setMaxAge(3600L);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("http://localhost:8080"); // 1 设置访问源地址
-        corsConfiguration.addAllowedHeader("*"); // 2 设置访问源请求头
-        corsConfiguration.addAllowedMethod("*"); // 3 设置访问源请求方法
-        corsConfiguration.setMaxAge(MAX_AGE);
-        source.registerCorsConfiguration("/**", corsConfiguration); // 4 对接口配置跨域设置
+        source.registerCorsConfiguration("/**", configuration);
         return new CorsFilter(source);
     }
 }
