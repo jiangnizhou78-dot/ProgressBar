@@ -37,7 +37,11 @@ public class WebAppConfigurer implements WebMvcConfigurer {
     }
     @Override
     public void addInterceptors(InterceptorRegistry registry){
-        String[] patterns=new String[]{};
+        String[] patterns = new String[]{
+                "/image/iconPicture/**",  // 放行所有图片请求
+                "/icontype",
+                "/icon/getIcons/**"
+        };
         registry.addInterceptor(sysInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns(patterns);
